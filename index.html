@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tapos Patikar — Video Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0a0a0a;--dark:#111111;--card:#161616;
+  --border:#222;--white:#fff;--off:#e8e8e8;
+  --grey:#888;--gold:#c9a84c;--gold-lt:#e2c06a;
+  --gold-dim:rgba(201,168,76,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--black);color:var(--white);overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 5%;background:rgba(10,10,10,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.25rem;color:var(--white);text-decoration:none;}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:1.8rem;list-style:none;align-items:center;}
+.nav-links a{text-decoration:none;color:var(--grey);font-size:.78rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;transition:color .2s;}
+.nav-links a:hover{color:var(--white);}
+.nav-book{background:var(--gold)!important;color:var(--black)!important;padding:.5rem 1.3rem;border-radius:2rem;font-weight:700!important;transition:background .2s!important;}
+.nav-book:hover{background:var(--gold-lt)!important;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:9rem 5% 5rem;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 30%,rgba(201,168,76,.07) 0%,transparent 70%);}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:.6rem;font-size:.72rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,.3);padding:.4rem 1.1rem;border-radius:2rem;margin-bottom:2rem;opacity:0;animation:fadeUp .8s .1s forwards;}
+.hero-eyebrow::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,6.5vw,5.2rem);line-height:1.08;font-weight:900;color:var(--white);max-width:860px;opacity:0;animation:fadeUp .9s .3s forwards;}
+.hero h1 em{font-style:italic;color:var(--gold);}
+.hero-sub{margin-top:1.6rem;font-size:1rem;color:var(--grey);max-width:580px;line-height:1.8;opacity:0;animation:fadeUp .9s .5s forwards;}
+.hero-tagline{margin-top:1.6rem;font-size:clamp(1.1rem,2.2vw,1.45rem);color:var(--off);max-width:640px;line-height:1.5;font-weight:500;opacity:0;animation:fadeUp .9s .5s forwards;}
+.hero-support{margin-top:1rem;font-size:.98rem;color:var(--grey);max-width:600px;line-height:1.8;opacity:0;animation:fadeUp .9s .55s forwards;}
+.hero-checks{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center;margin-top:1.5rem;opacity:0;animation:fadeUp .9s .6s forwards;}
+.hero-check{font-size:.85rem;color:var(--off);display:flex;align-items:center;gap:.4rem;}
+.hero-check::before{content:'✓';color:var(--gold);font-weight:700;}
+.hero-lang{display:inline-flex;align-items:center;gap:.4rem;margin-top:1rem;font-size:.78rem;color:var(--gold);background:var(--gold-dim);border:1px solid rgba(201,168,76,.2);padding:.3rem .9rem;border-radius:2rem;opacity:0;animation:fadeUp .9s .65s forwards;}
+.hero-actions{margin-top:2.2rem;display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;opacity:0;animation:fadeUp .9s .7s forwards;}
+.btn-gold{background:var(--gold);color:var(--black);padding:.9rem 2rem;border-radius:3rem;text-decoration:none;font-weight:700;font-size:.9rem;display:inline-flex;align-items:center;gap:.5rem;transition:background .2s,transform .2s;}
+.btn-gold:hover{background:var(--gold-lt);transform:translateY(-2px);}
+.btn-outline{border:1.5px solid var(--border);color:var(--off);padding:.9rem 2rem;border-radius:3rem;text-decoration:none;font-weight:500;font-size:.9rem;display:inline-flex;align-items:center;gap:.5rem;transition:border-color .2s,transform .2s,color .2s;}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px);}
+.hero-scroll{margin-top:3.5rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:#333;opacity:0;animation:fadeUp .9s 1s forwards;}
+.scroll-bar{width:1px;height:36px;background:linear-gradient(to bottom,var(--gold),transparent);animation:pulse 2s infinite;}
+
+/* STATS */
+.stats{display:flex;justify-content:center;flex-wrap:wrap;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.stat{flex:1;min-width:140px;padding:2.2rem 1rem;text-align:center;border-right:1px solid var(--border);}
+.stat:last-child{border-right:none;}
+.stat-n{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--gold);}
+.stat-l{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);margin-top:.3rem;}
+
+/* SECTION */
+.section{padding:7rem 5%;}
+.eyebrow{font-size:.7rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem;}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.15;color:var(--white);max-width:580px;}
+.sec-sub{color:var(--grey);font-size:.92rem;line-height:1.75;max-width:520px;margin-top:.8rem;}
+.sec-head{margin-bottom:3.5rem;}
+
+/* RESULTS */
+.results{background:var(--dark);}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;}
+.result-card{background:var(--card);border:1px solid var(--border);border-radius:1rem;overflow:hidden;transition:border-color .25s,transform .25s;}
+.result-card:hover{border-color:rgba(201,168,76,.4);transform:translateY(-5px);}
+.result-img{width:100%;display:block;object-fit:contain;background:#0e0e0e;max-height:320px;}
+.result-info{padding:1.2rem 1.4rem;}
+.result-num{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:700;color:var(--gold);}
+.result-label{font-size:.8rem;color:var(--grey);margin-top:.3rem;line-height:1.5;}
+.result-badge{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .7rem;border-radius:1rem;margin-bottom:.6rem;}
+.badge-mine{background:var(--gold);color:var(--black);}
+.badge-client{background:#2a2a2a;color:var(--grey);border:1px solid var(--border);}
+
+/* BEFORE AFTER */
+.beforeafter{background:var(--black);}
+.ba-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;}
+.ba-card{background:var(--card);border:1px solid var(--border);border-radius:1rem;overflow:hidden;transition:border-color .25s,transform .25s;}
+.ba-card:hover{border-color:rgba(201,168,76,.3);transform:translateY(-5px);}
+.ba-video{width:100%;aspect-ratio:9/16;border:none;display:block;background:#000;}
+.ba-info{padding:1.2rem 1.4rem;}
+.ba-title{font-size:.95rem;font-weight:600;color:var(--white);}
+.ba-desc{font-size:.82rem;color:var(--grey);margin-top:.3rem;}
+
+/* PORTFOLIO */
+.portfolio{background:var(--dark);}
+.port-category{margin-bottom:3rem;}
+.port-cat-title{font-size:.8rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;display:flex;align-items:center;gap:.8rem;}
+.port-cat-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.port-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;}
+.port-card{background:var(--card);border:1px solid var(--border);border-radius:.9rem;overflow:hidden;transition:transform .25s,border-color .25s;}
+.port-card:hover{transform:translateY(-5px);border-color:rgba(201,168,76,.3);}
+.port-video{width:100%;border:none;display:block;background:#000;}
+.port-video.shorts{aspect-ratio:9/16;}
+.port-video.regular{aspect-ratio:16/9;}
+.port-info{padding:1.1rem 1.3rem;}
+.port-title{font-size:.92rem;font-weight:600;color:var(--white);}
+.port-desc{font-size:.8rem;color:var(--grey);margin-top:.3rem;}
+
+/* PODCAST */
+.podcast{background:var(--black);}
+.podcast-layout{display:grid;grid-template-columns:2.2fr 1fr;gap:1.5rem;align-items:start;}
+.podcast-main,.podcast-side{background:var(--card);border:1px solid var(--border);border-radius:1rem;overflow:hidden;transition:border-color .25s,transform .25s;}
+.podcast-main:hover,.podcast-side:hover{border-color:rgba(201,168,76,.4);transform:translateY(-5px);}
+.podcast-video-big{width:100%;aspect-ratio:16/9;border:none;display:block;background:#000;}
+.podcast-video-clip{width:100%;aspect-ratio:9/16;border:none;display:block;background:#000;}
+@media(max-width:900px){.podcast-layout{grid-template-columns:1fr;}.podcast-side{max-width:340px;width:100%;margin:0 auto;}}
+
+/* CTA STRIP */
+.cta-strip{background:var(--black);padding:0 5% 4rem;}
+.cta-strip-inner{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;background:linear-gradient(135deg,rgba(201,168,76,.14),rgba(201,168,76,.04));border:1px solid rgba(201,168,76,.35);border-radius:1.2rem;padding:2rem 2.4rem;}
+.cta-strip-title{font-family:'Playfair Display',serif;font-size:clamp(1.3rem,3vw,1.8rem);color:var(--white);line-height:1.2;}
+.cta-strip-sub{color:var(--grey);font-size:.9rem;margin-top:.4rem;}
+@media(max-width:700px){.cta-strip-inner{flex-direction:column;text-align:center;padding:1.8rem 1.4rem;}}
+
+/* FLOATING WHATSAPP */
+.wa-float{position:fixed;right:1.4rem;bottom:1.4rem;z-index:300;display:flex;align-items:center;gap:.6rem;background:#25d366;color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:.9rem;border-radius:3rem;box-shadow:0 6px 24px rgba(37,211,102,.4);transition:transform .2s,box-shadow .2s;animation:waPulse 2.4s infinite;}
+.wa-float:hover{transform:translateY(-3px) scale(1.04);}
+.wa-float-label{max-width:0;overflow:hidden;white-space:nowrap;transition:max-width .3s,margin .3s;}
+.wa-float:hover .wa-float-label{max-width:140px;margin-right:.5rem;}
+@keyframes waPulse{0%{box-shadow:0 6px 24px rgba(37,211,102,.4),0 0 0 0 rgba(37,211,102,.5);}70%{box-shadow:0 6px 24px rgba(37,211,102,.4),0 0 0 16px rgba(37,211,102,0);}100%{box-shadow:0 6px 24px rgba(37,211,102,.4),0 0 0 0 rgba(37,211,102,0);}}
+
+/* INSTAGRAM CTA */
+.ig-cta{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:2rem;text-align:center;margin-top:2.5rem;}
+.ig-cta p{color:var(--grey);font-size:.92rem;margin-bottom:1.2rem;}
+.ig-cta p span{color:var(--white);font-weight:600;}
+.btn-ig{display:inline-flex;align-items:center;gap:.6rem;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;padding:.8rem 1.8rem;border-radius:3rem;text-decoration:none;font-weight:600;font-size:.88rem;transition:opacity .2s,transform .2s;}
+.btn-ig:hover{opacity:.88;transform:translateY(-2px);}
+
+/* HOW I HELP */
+.howhelp{background:var(--black);}
+.help-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.2rem;}
+.help-card{background:var(--card);border:1px solid var(--border);border-radius:.9rem;padding:1.8rem;transition:border-color .25s,transform .25s;}
+.help-card:hover{border-color:rgba(201,168,76,.35);transform:translateY(-4px);}
+.help-icon{font-size:1.5rem;width:46px;height:46px;border-radius:.65rem;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;}
+.help-title{font-size:.95rem;font-weight:600;color:var(--white);margin-bottom:.4rem;}
+.help-desc{font-size:.82rem;color:var(--grey);line-height:1.6;}
+
+/* PROCESS */
+.process{background:var(--black);}
+.process-steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem;}
+.process-step{background:var(--card);border:1px solid var(--border);border-radius:.9rem;padding:1.8rem;position:relative;transition:border-color .25s,transform .25s;}
+.process-step:hover{border-color:rgba(201,168,76,.3);transform:translateY(-4px);}
+.step-num{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:var(--gold-dim);line-height:1;margin-bottom:.8rem;}
+.step-title{font-size:.95rem;font-weight:600;color:var(--white);margin-bottom:.5rem;}
+.step-desc{font-size:.82rem;color:var(--grey);line-height:1.65;}
+
+/* ABOUT */
+.about{background:var(--dark);display:grid;grid-template-columns:1fr 1.4fr;gap:4rem;align-items:center;}
+.about-img-wrap{position:relative;border-radius:1rem;overflow:hidden;border:1px solid var(--border);}
+.about-img-wrap img{width:100%;display:block;aspect-ratio:3/4;object-fit:cover;}
+.about-badge{position:absolute;bottom:1.5rem;right:1.5rem;background:var(--gold);color:var(--black);padding:.9rem 1.3rem;border-radius:.75rem;text-align:center;}
+.badge-n{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;line-height:1;}
+.badge-l{font-size:.7rem;font-weight:600;letter-spacing:.06em;margin-top:.2rem;}
+.about-tools{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.5rem;}
+.tool{padding:.33rem .9rem;border-radius:2rem;background:var(--card);border:1px solid var(--border);font-size:.78rem;color:var(--grey);font-weight:500;}
+.lang-note{margin-top:1rem;padding:.8rem 1.2rem;background:var(--gold-dim);border:1px solid rgba(201,168,76,.2);border-radius:.6rem;font-size:.82rem;color:var(--gold);}
+
+/* TESTIMONIALS */
+.testimonials{background:var(--black);}
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.2rem;}
+.testi-card{background:var(--card);border:1px solid var(--border);border-radius:.9rem;padding:1.8rem;transition:border-color .25s;}
+.testi-card:hover{border-color:rgba(201,168,76,.3);}
+.testi-stars{color:var(--gold);font-size:.85rem;letter-spacing:.1em;margin-bottom:.9rem;}
+.testi-text{font-size:.9rem;line-height:1.75;color:#bbb;font-style:italic;margin-bottom:1.4rem;}
+.testi-author{display:flex;align-items:center;gap:.8rem;}
+.author-av{width:38px;height:38px;border-radius:50%;background:var(--gold-dim);border:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:center;font-size:.95rem;font-weight:700;color:var(--gold);flex-shrink:0;}
+.author-name{font-weight:600;font-size:.88rem;color:var(--white);}
+.author-role{font-size:.75rem;color:var(--grey);}
+
+/* FAQ */
+.faq{background:var(--dark);}
+.faq-list{max-width:700px;}
+.faq-item{border-bottom:1px solid var(--border);}
+details summary{display:flex;justify-content:space-between;align-items:center;padding:1.3rem 0;cursor:pointer;gap:1rem;font-weight:600;font-size:.92rem;color:var(--white);list-style:none;}
+details summary::-webkit-details-marker{display:none;}
+.faq-plus{width:28px;height:28px;border-radius:50%;flex-shrink:0;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1rem;transition:background .2s,border-color .2s;}
+details[open] .faq-plus{background:var(--gold);color:var(--black);border-color:var(--gold);}
+details[open] .faq-plus::after{content:'−';}
+.faq-plus::after{content:'+';}
+.faq-ans{padding:.2rem 0 1.3rem;font-size:.87rem;color:var(--grey);line-height:1.75;}
+
+/* BOOK */
+.book{background:var(--black);text-align:center;padding:7rem 5%;position:relative;overflow:hidden;}
+.book::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(201,168,76,.06) 0%,transparent 70%);}
+.book-actions{margin-top:2.5rem;display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;position:relative;}
+.btn-wa{background:#25d366;color:#fff;padding:.95rem 2.2rem;border-radius:3rem;text-decoration:none;font-weight:700;font-size:.95rem;display:inline-flex;align-items:center;gap:.6rem;transition:opacity .2s,transform .2s;border:none;cursor:pointer;}
+.btn-wa:hover{opacity:.88;transform:translateY(-2px);}
+.btn-mail{border:1.5px solid rgba(201,168,76,.4);color:var(--gold);padding:.95rem 2.2rem;border-radius:3rem;text-decoration:none;font-weight:600;font-size:.95rem;display:inline-flex;align-items:center;gap:.6rem;transition:border-color .2s,background .2s,transform .2s;}
+.btn-mail:hover{background:var(--gold-dim);transform:translateY(-2px);}
+
+/* FOOTER */
+footer{background:var(--dark);border-top:1px solid var(--border);padding:2rem 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.foot-logo{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--white);}
+.foot-logo span{color:var(--gold);}
+.foot-links{display:flex;gap:1.5rem;}
+.foot-links a{color:var(--grey);text-decoration:none;font-size:.82rem;transition:color .2s;}
+.foot-links a:hover{color:var(--gold);}
+.foot-copy{color:#333;font-size:.75rem;}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s,transform .65s;}
+.reveal.visible{opacity:1;transform:none;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+@keyframes pulse{0%,100%{opacity:.2;}50%{opacity:1;}}
+
+.nav-toggle{display:none;background:none;border:1px solid var(--border);border-radius:.6rem;width:42px;height:42px;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+.nav-toggle span{display:block;width:18px;height:2px;background:var(--white);transition:transform .25s,opacity .25s;}
+.nav-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.nav-toggle.open span:nth-child(2){opacity:0;}
+.nav-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+@media(max-width:900px){
+  nav{padding:1rem 5%;}
+  .nav-toggle{display:flex;}
+  .nav-links{display:none;position:fixed;top:68px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:rgba(10,10,10,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:.5rem 5% 1.2rem;}
+  .nav-links.open{display:flex;}
+  .nav-links li a{display:block;padding:.95rem 0;font-size:.85rem;border-bottom:1px solid var(--border);}
+  .nav-links li:last-child a{border-bottom:none;margin-top:.9rem;text-align:center;padding:.8rem 1.3rem;}
+  .section{padding:4.5rem 5%;}
+  .about{grid-template-columns:1fr;gap:2.5rem;}
+  .about-img-wrap img{aspect-ratio:1/1;}
+  .stats{flex-wrap:wrap;}
+  .stat{border-right:none;border-bottom:1px solid var(--border);min-width:50%;}
+  footer{flex-direction:column;text-align:center;}
+  .hero-checks{flex-direction:column;align-items:center;gap:.8rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Tapos <span>Patikar</span></a>
+  <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#results">Results</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#podcast">Podcast</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#book" class="nav-book">Book a Call</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-eyebrow">Video Editor &mdash; Available Worldwide</div>
+  <h1>Professional<br><em>Video Editor</em></h1>
+  <p class="hero-tagline">Turning raw footage into polished, engaging content.</p>
+  <p class="hero-support">I work with creators, founders, and agencies to produce high-quality short-form videos, podcast content, and ad creatives.</p>
+  <div class="hero-checks">
+    <span class="hero-check">500+ Videos Edited</span>
+    <span class="hero-check">10M+ Views Generated</span>
+    <span class="hero-check">International Clients</span>
+  </div>
+  <div class="hero-lang">English language videos only</div>
+  <div class="hero-actions">
+    <a href="https://wa.me/918910481488?text=Hi%20Tapos!%20I%20saw%20your%20portfolio%20and%20I%27d%20like%20to%20book%20a%20call%20about%20video%20editing." class="btn-gold" target="_blank">
+      <svg width="17" height="17" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+      Book a Call
+    </a>
+    <a href="#work" class="btn-outline">View Portfolio ↓</a>
+  </div>
+  <div class="hero-scroll"><span>Scroll</span><div class="scroll-bar"></div></div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat reveal"><div class="stat-n">500+</div><div class="stat-l">Videos Edited</div></div>
+  <div class="stat reveal"><div class="stat-n">10M+</div><div class="stat-l">Views Generated</div></div>
+  <div class="stat reveal"><div class="stat-n">2</div><div class="stat-l">Free Revisions</div></div>
+  <div class="stat reveal"><div class="stat-n">24h</div><div class="stat-l">Avg. Turnaround</div></div>
+</div>
+
+<!-- RESULTS -->
+<section class="section results" id="results">
+  <div class="sec-head">
+    <div class="eyebrow reveal">✦ Real Results</div>
+    <h2 class="sec-title reveal">Numbers That Prove The Work</h2>
+    <p class="sec-sub reveal">Real view counts from videos I edited — for my own page and for clients worldwide. Good editing gets real results.</p>
+  </div>
+  <div class="results-grid">
+
+    <div class="result-card reveal">
+      <img src="1m_views.png" alt="1M Views" class="result-img">
+      <div class="result-info">
+        <div class="result-badge badge-mine">My Video</div>
+        <div class="result-num">1M+</div>
+        <div class="result-label">Views · 57K Viewers · 95K Interactions · 98.6% Non-followers reached</div>
+      </div>
+    </div>
+
+    <div class="result-card reveal">
+      <img src="224k_views_in_1_day.jpg" alt="224K Client Views" class="result-img">
+      <div class="result-info">
+        <div class="result-badge badge-client">Client Video</div>
+        <div class="result-num">224K</div>
+        <div class="result-label">Views in 1 day · 4.7K Likes · Client Video</div>
+      </div>
+    </div>
+
+    <div class="result-card reveal">
+      <img src="Consistent_views.jpeg" alt="Consistent Client Results" class="result-img">
+      <div class="result-info">
+        <div class="result-badge badge-client">Client Videos</div>
+        <div class="result-num">1.3M+</div>
+        <div class="result-label">Total views across 9 videos — 470K, 382K, 156K, 106K, 100K and more</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA AFTER RESULTS -->
+<section class="cta-strip">
+  <div class="cta-strip-inner reveal">
+    <div class="cta-strip-text">
+      <div class="cta-strip-title">Want results like these for your content?</div>
+      <div class="cta-strip-sub">Tell me about your project and I'll reply fast with a custom quote.</div>
+    </div>
+    <a href="https://wa.me/918910481488?text=Hi%20Tapos!%20I%20saw%20your%20portfolio%20and%20I%27d%20like%20to%20book%20a%20call%20about%20video%20editing." class="btn-gold" target="_blank"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg> Book a Call</a>
+  </div>
+</section>
+
+<!-- BEFORE & AFTER -->
+<section class="section beforeafter" id="beforeafter">
+  <div class="sec-head">
+    <div class="eyebrow reveal">✦ Before &amp; After</div>
+    <h2 class="sec-title reveal">See The Difference Editing Makes</h2>
+    <p class="sec-sub reveal">Raw footage vs the finished edit — watch exactly what professional editing does to your content.</p>
+  </div>
+  <div class="ba-grid">
+
+    <div class="ba-card reveal">
+      <iframe class="ba-video" src="https://www.youtube.com/embed/qVuRv0jLkMU?rel=0&modestbranding=1" allowfullscreen loading="lazy"></iframe>
+      <div class="ba-info">
+        <div class="ba-title">Before &amp; After #1 — Talking Head</div>
+        <div class="ba-desc">Raw vs edited — see the full transformation.</div>
+      </div>
+    </div>
+
+    <div class="ba-card reveal">
+      <iframe class="ba-video" src="https://www.youtube.com/embed/dpMzpH_zzqc?rel=0&modestbranding=1" allowfullscreen loading="lazy"></iframe>
+      <div class="ba-info">
+        <div class="ba-title">Before &amp; After #2 — Short Form</div>
+        <div class="ba-desc">How editing turns ordinary footage into scroll-stopping content.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="section portfolio" id="work">
+  <div class="sec-head">
+    <div class="eyebrow reveal">✦ My Work</div>
+    <h2 class="sec-title reveal">Watch The Edits</h2>
+    <p class="sec-sub reveal">Browse by content type. Every video plays right here — no need to go anywhere else.</p>
+  </div>
+
+  <!-- SHORT FORM -->
+  <div class="port-category reveal">
+    <div class="port-cat-title">Short-Form Content</div>
+    <div class="port-grid">
+      <div class="port-card">
+        <iframe class="port-video shorts" src="https://www.youtube.com/embed/GZ5poKzcl9w?rel=0&modestbranding=1" allowfullscreen loading="lazy"></iframe>
+        <div class="port-info"><div class="port-title">Short Form #1</div><div class="port-desc">Scroll-stopping vertical edit with captions & music sync.</div></div>
+      </div>
+      <div class="port-card">
+        <iframe class="port-video shorts" src="https://www.youtube.com/embed/48UP2rqWO14?rel=0&modestbranding=1" allowfullscreen loading="lazy"></iframe>
+        <div class="port-info"><div class="port-title">Short Form #2</div><div class="port-desc">Fast-paced hook-driven edit built to retain viewers.</div></div>
+      </div>
+      <div class="port-card">
+        <iframe class="port-video shorts" src="https://www.youtube.com/embed/rhIk5G_KYkE?rel=0&modestbranding=1" allowfullscreen loading="lazy"></iframe>
+        <div class="port-info"><div class="port-title">Short Form #3</div><div class="port-desc">Trending style with dynamic cuts and animated captions.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSTAGRAM CTA -->
+  <div class="ig-cta reveal">
+    <p>Want to see more? <span>Check out my latest work on Instagram</span> — I post regular edits, before & afters and results.</p>
+    <a href="https://www.instagram.com/tapos.patikar/" target="_blank" class="btn-ig">
+      <svg width="16" height="16" fill="white" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      View My Instagram @tapos.patikar
+    </a>
+  </div>
+</section>
+
+<!-- PODCAST -->
+<section class="section podcast" id="podcast">
+  <div class="sec-head">
+    <div class="eyebrow reveal">✦ Podcast Editing</div>
+    <h2 class="sec-title reveal">Podcasts That Sound &amp; Look Professional</h2>
+    <p class="sec-sub reveal">A full branded podcast intro, plus a short clip ready to post on social media.</p>
+  </div>
+  <div class="podcast-layout">
+    <div class="podcast-main reveal">
+      <iframe class="podcast-video-big" src="https://www.youtube.com/embed/ZhUmkC1ffV0?rel=0&modestbranding=1" allowfullscreen loading="lazy"></iframe>
+      <div class="port-info"><div class="port-title">Podcast Intro</div><div class="port-desc">Clean branded intro with smooth animation and audio that sets the right tone.</div></div>
+    </div>
+    <div class="podcast-side reveal">
+      <iframe class="podcast-video-clip" src="https://www.youtube.com/embed/w9UP7Otazps?rel=0&modestbranding=1" allowfullscreen loading="lazy"></iframe>
+      <div class="port-info"><div class="port-title">Podcast Clip</div><div class="port-desc">Short vertical clip with animated captions, made for Reels &amp; Shorts.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW I HELP -->
+<section class="section howhelp" id="services">
+  <div class="sec-head">
+    <div class="eyebrow reveal">✦ How I Help</div>
+    <h2 class="sec-title reveal">What I Do For You</h2>
+    <p class="sec-sub reveal">Professional editing for every content type — delivered fast, with 2 free revisions every time.</p>
+  </div>
+  <div class="help-grid">
+    <div class="help-card reveal">
+      <div class="help-icon"><svg width="22" height="22" fill="none" stroke="#c9a84c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 9.5l3 2.5-3 2.5z"/></svg></div>
+      <div class="help-title">Short-Form Editing</div>
+      <div class="help-desc">Scroll-stopping Reels and Shorts with trending cuts, captions, music sync and hooks that hold attention.</div>
+    </div>
+    <div class="help-card reveal">
+      <div class="help-icon"><svg width="22" height="22" fill="none" stroke="#c9a84c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></div>
+      <div class="help-title">Talking Head Editing</div>
+      <div class="help-desc">Clean cuts, tight pacing, captions and B-roll that keep your message clear and viewers watching.</div>
+    </div>
+    <div class="help-card reveal">
+      <div class="help-icon"><svg width="22" height="22" fill="none" stroke="#c9a84c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg></div>
+      <div class="help-title">Podcast Editing</div>
+      <div class="help-desc">Clean audio, branded intros/outros, animated captions and short clips repurposed for social media.</div>
+    </div>
+    <div class="help-card reveal">
+      <div class="help-icon"><svg width="22" height="22" fill="none" stroke="#c9a84c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1zM15 9a4 4 0 0 1 0 6M18 6a8 8 0 0 1 0 12"/></svg></div>
+      <div class="help-title">Ad Video Editing</div>
+      <div class="help-desc">High-converting video ads for Facebook, Instagram and TikTok with strong hooks, clear offers and punchy CTAs.</div>
+    </div>
+    <div class="help-card reveal">
+      <div class="help-icon"><svg width="22" height="22" fill="none" stroke="#c9a84c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></svg></div>
+      <div class="help-title">Content Repurposing</div>
+      <div class="help-desc">Turn one long video into 5+ short clips for multiple platforms. Maximum reach from one piece of content.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="section process" id="process">
+  <div class="sec-head">
+    <div class="eyebrow reveal">✦ How We Work Together</div>
+    <h2 class="sec-title reveal">Simple. Clear. Professional.</h2>
+    <p class="sec-sub reveal">No complicated process — just a smooth experience from start to final delivery.</p>
+  </div>
+  <div class="process-steps">
+    <div class="process-step reveal">
+      <div class="step-num">01</div>
+      <div class="step-title">Send Footage &amp; References</div>
+      <div class="step-desc">Share your raw footage and any reference videos you like. I review everything and confirm I can deliver great results — often even better than the reference.</div>
+    </div>
+    <div class="process-step reveal">
+      <div class="step-num">02</div>
+      <div class="step-title">Payment</div>
+      <div class="step-desc">We agree on the project details and complete payment before editing begins. Simple and straightforward.</div>
+    </div>
+    <div class="process-step reveal">
+      <div class="step-num">03</div>
+      <div class="step-title">First Draft Delivered</div>
+      <div class="step-desc">I edit your video with full focus and care, then send the first draft for your review — usually within 24–48 hours.</div>
+    </div>
+    <div class="process-step reveal">
+      <div class="step-num">04</div>
+      <div class="step-title">Revisions &amp; Final Delivery</div>
+      <div class="step-desc">You get 2 revision rounds per video, and tiny tweaks after that are no problem. Then your polished video is delivered, ready to publish.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section about" id="about">
+  <div class="about-img-wrap reveal">
+    <img src="profile_pic.png" alt="Tapos Patikar — Video Editor">
+    <div class="about-badge">
+      <div class="badge-n">500+</div>
+      <div class="badge-l">Videos Edited</div>
+    </div>
+  </div>
+  <div class="about-text">
+    <div class="eyebrow reveal">✦ About Me</div>
+    <h2 class="sec-title reveal">Tapos Patikar</h2>
+    <p class="sec-sub reveal" style="max-width:100%;margin-top:1.2rem;">I'm Tapos Patikar, a professional video editor focused on turning raw footage into polished, engaging content.</p>
+    <p class="sec-sub reveal" style="max-width:100%;margin-top:.8rem;">I work with creators, founders, and agencies to create short-form videos, podcast content, and talking-head ad creatives that communicate ideas clearly and keep viewers engaged.</p>
+    <p class="sec-sub reveal" style="max-width:100%;margin-top:.8rem;">My focus is on strong pacing, clean editing, thoughtful visuals, and consistent delivery. I aim to make the editing process smooth and help clients publish quality content without having to manage every editing detail themselves.</p>
+    <div class="lang-note reveal">I work with <strong>English language videos only</strong> — ensuring the highest quality in caption accuracy, pacing and communication.</div>
+    <div class="about-tools reveal">
+      <span class="tool">Adobe Premiere Pro</span>
+      <span class="tool">Color Grading</span>
+      <span class="tool">Audio Cleanup</span>
+      <span class="tool">Caption Animation</span>
+      <span class="tool">B-Roll Editing</span>
+      <span class="tool">Fast Delivery</span>
+    </div>
+    <div style="margin-top:2rem;" class="reveal">
+      <a href="https://www.instagram.com/tapos.patikar/" target="_blank" class="btn-outline">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        Follow on Instagram
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section testimonials" id="reviews">
+  <div class="sec-head">
+    <div class="eyebrow reveal">✦ Client Reviews</div>
+    <h2 class="sec-title reveal">What Clients Say</h2>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"I've worked with Tapos for 10+ of my videos and the service he provides is exceptional. He is very down to earth, very understanding, timely, and has great communication. He's someone I definitely plan on working with long-term."</p>
+      <div class="testi-author"><div class="author-av">J</div><div><div class="author-name">Jabez</div><div class="author-role">Content Creator</div></div></div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"I engaged Tapos for Hormozi style reel editing and found his work and communication to be at a high professional level. We were all happy with the final outcome and will definitely be engaging with his services again in the future."</p>
+      <div class="testi-author"><div class="author-av">S</div><div><div class="author-name">Smithflx</div><div class="author-role">Content Creator</div></div></div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"NAILED IT — love it, thanks! Looks great. I sent it straight over to the team. Really happy with the result every single time."</p>
+      <div class="testi-author"><div class="author-av">R</div><div><div class="author-name">Roi</div><div class="author-role">Marketing Creator</div></div></div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Looks good! Thanks! Working with Tapos has been smooth from start to finish. Great communication, fast delivery and quality editing every single time."</p>
+      <div class="testi-author"><div class="author-av">S</div><div><div class="author-name">Sydne Jones</div><div class="author-role">Content Creator</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section faq" id="faq">
+  <div class="sec-head">
+    <div class="eyebrow reveal">✦ FAQ</div>
+    <h2 class="sec-title reveal">Questions? Answered.</h2>
+  </div>
+  <div class="faq-list">
+    <details class="faq-item reveal">
+      <summary>How many revisions do I get? <span class="faq-plus"></span></summary>
+      <p class="faq-ans">Every project includes 2 free revisions per video. And if you need any tiny change after that — no problem at all, just ask. I want you to be completely happy with the result.</p>
+    </details>
+    <details class="faq-item reveal">
+      <summary>How do I send you my raw footage? <span class="faq-plus"></span></summary>
+      <p class="faq-ans">You can send files via Google Drive, WeTransfer or Dropbox — whichever is easiest. I'll share a folder link once we start working together.</p>
+    </details>
+    <details class="faq-item reveal">
+      <summary>How long does editing take? <span class="faq-plus"></span></summary>
+      <p class="faq-ans">Short-form content: 24–48 hours. Talking head videos: 1–2 days. Podcasts and ad videos: 2–3 days. Rush delivery is also available if you need it faster.</p>
+    </details>
+    <details class="faq-item reveal">
+      <summary>Do you show your prices? <span class="faq-plus"></span></summary>
+      <p class="faq-ans">I don't list fixed prices because every project is different. Reach out on WhatsApp or email, tell me what you need, and I'll give you a custom quote based on your project.</p>
+    </details>
+    <details class="faq-item reveal">
+      <summary>How do we get started? <span class="faq-plus"></span></summary>
+      <p class="faq-ans">Simple — message me on WhatsApp or send an email. Tell me what type of video you need, share your footage and references, and we'll take it from there!</p>
+    </details>
+  </div>
+</section>
+
+<!-- BOOK ME -->
+<section class="book" id="book">
+  <div style="position:relative;">
+    <div class="eyebrow reveal" style="display:flex;justify-content:center;">✦ Let's Work Together</div>
+    <h2 class="sec-title reveal" style="max-width:100%;text-align:center;margin:0 auto;font-size:clamp(2rem,5vw,3.5rem);">Ready To Create<br><em style="color:var(--gold);font-style:italic;">Better Content?</em></h2>
+    <p class="sec-sub reveal" style="text-align:center;max-width:500px;margin:1rem auto 0;">Let's discuss your project. Tell me what you need and I'll get back to you fast. 2 free revisions guaranteed on every video.</p>
+    <div class="book-actions reveal">
+      <a href="https://wa.me/918910481488?text=Hi%20Tapos!%20I%20saw%20your%20portfolio%20and%20I%27d%20like%20to%20discuss%20a%20video%20editing%20project." class="btn-wa" target="_blank">
+        <svg width="18" height="18" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        Book a Call on WhatsApp
+      </a>
+      <a href="mailto:tapospatikar.business@gmail.com" class="btn-mail">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+        Send an Email
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">Tapos <span>Patikar</span></div>
+  <div class="foot-links">
+    <a href="https://www.instagram.com/tapos.patikar/" target="_blank">Instagram</a>
+    <a href="mailto:tapospatikar.business@gmail.com">Email</a>
+    <a href="https://wa.me/918910481488" target="_blank">WhatsApp</a>
+  </div>
+  <div class="foot-copy">© 2025 Tapos Patikar. All rights reserved.</div>
+</footer>
+
+<!-- FLOATING WHATSAPP -->
+<a href="https://wa.me/918910481488?text=Hi%20Tapos!%20I%20saw%20your%20portfolio%20and%20I%27d%20like%20to%20book%20a%20call%20about%20video%20editing." class="wa-float" target="_blank" aria-label="Chat on WhatsApp">
+  <svg width="30" height="30" fill="#fff" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+  <span class="wa-float-label">Chat with me</span>
+</a>
+
+<script>
+const navToggle=document.getElementById('navToggle'),navLinks=document.getElementById('navLinks');
+navToggle.addEventListener('click',()=>{const o=navLinks.classList.toggle('open');navToggle.classList.toggle('open',o);navToggle.setAttribute('aria-expanded',o);});
+navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{navLinks.classList.remove('open');navToggle.classList.remove('open');navToggle.setAttribute('aria-expanded','false');}));
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:0.08});
+reveals.forEach(r=>obs.observe(r));
+</script>
+</body>
+</html>
